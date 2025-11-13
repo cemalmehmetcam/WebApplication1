@@ -1,0 +1,53 @@
+﻿@model IEnumerable<WebApplication1.Models.TextEntry>
+
+@{
+    ViewData["Title"] = "Learn ASP.NET Core";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Hello world</h1>
+    <p>Explore the world of <a href="https://learn.microsoft.com/aspnet/core">ASP.NET Core</a> and build modern web applications.</p>
+</div>
+
+<section>
+    <h2>Interactive Section</h2>
+    <form method="post" asp-action="SaveText">
+        <div class="form-group">
+            <label for="content">Share Your Thoughts:</label>
+            <input type="text" class="form-control" id="content" name="content" placeholder="Enter your text here..." required />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</section>
+
+<hr />
+
+<section>
+    <h2>Community Contributions</h2>
+    <p>Below are some of the thoughts shared by our community members:</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Content</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in Model)
+            {
+                <tr>
+                    <td>@entry.Id</td>
+                    <td>@entry.Content</td>
+                    <td>
+                        <form method="post" asp-action="DeleteText" asp-route-id="@entry.Id" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash-alt"></i> Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

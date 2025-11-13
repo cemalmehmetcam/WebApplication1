@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Database Health Monitor";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Database Health Monitor</h1>
+    <p>Monitoring the health of the database connection in real-time.</p>
+</div>
+
+<section>
+    <h2>Database Connection Status</h2>
+    <div id="db-health-status" class="alert alert-info">
+        Checking database connection...
+    </div>
+</section>
+
+<script>
+    async function checkDatabaseHealth() {
+        try {
+            const response = await fetch('/api/health/db');
+            const data = await response.json();
+
+            const statusElement = document.getElementById('db-health-status');
+            if (data.isHealthy) {
+                statusElement.className = 'alert alert-success';
+                statusElement.textContent = 'Database connection is healthy.';
+            } else {
+                statusElement.className = 'alert alert-danger';
+                statusElement.textContent = 'Database connection is not healthy.';
+            }
+        } catch (error) {
+            const statusElement = document.getElementById('db-health-status');
+            statusElement.className = 'alert alert-danger';
+            statusElement.textContent = 'Error checking database connection.';
+        }
+    }
+
+    setInterval(checkDatabaseHealth, 5000); // Check every 5 seconds
+    checkDatabaseHealth(); // Initial check
+</script>
