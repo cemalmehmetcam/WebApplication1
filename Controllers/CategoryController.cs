@@ -33,6 +33,11 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public IActionResult Create(Category category)
         {
+            // --- BU SATIRI EKLE (Hayat Kurtaran Kod) ---
+            // Bu kod, "Products listesi boş" hatasını görmezden gelmesini sağlar.
+            ModelState.Remove("Products");
+            // -------------------------------------------
+
             if (ModelState.IsValid)
             {
                 _categoryRepository.Add(category);
@@ -40,6 +45,8 @@ namespace WebApplication1.Controllers
                 TempData["success"] = "Kategori başarıyla oluşturuldu.";
                 return RedirectToAction("Index");
             }
+
+            // Eğer hala hata varsa, hatanın ne olduğunu görmek için bunu ekrana yazdıralım:
             return View(category);
         }
 
@@ -68,17 +75,20 @@ namespace WebApplication1.Controllers
             }
             return View(category);
         }
-
-        // 4. SİLME İŞLEMİ
-        public IActionResult Delete(int id)
+        // --- AJAX İLE SİLME İŞLEMİ (Bu metot JSON döndürür) ---
+        [HttpDelete]
+        public IActionResult DeleteAjax(int id)
         {
             var category = _categoryRepository.GetById(id);
-            if (category == null) return NotFound();
+            if (category == null)
+            {
+                return Json(new { success = false, message = "Kategori bulunamadı." });
+            }
 
             _categoryRepository.Delete(id);
             _categoryRepository.Save();
-            TempData["success"] = "Kategori başarıyla silindi.";
-            return RedirectToAction("Index");
+
+            return Json(new { success = true, message = "Kategori başarıyla silindi." });
         }
     }
 }

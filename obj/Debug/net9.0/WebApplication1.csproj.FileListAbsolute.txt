@@ -353,8 +353,6 @@ C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\compressed\uclpxe38t
 C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\compressed\igemxyk2qm-9vr69e8ynj.gz
 C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\compressed\tjlucbxuv0-87fc7y1x7t.gz
 C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\compressed\cqxxp6mh6s-mlv21k5csn.gz
-C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\compressed\mz4azubuim-nkwg0y5zjm.gz
-C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\compressed\4ej8qvsbid-nkwg0y5zjm.gz
 C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\staticwebassets.build.json.cache
 C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\staticwebassets.development.json
@@ -363,3 +361,5 @@ C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\staticwebassets.upTo
 C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\WebAppli.7D14BD69.Up2Date
 C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\WebApplication1.genruntimeconfig.cache
 C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\ref\WebApplication1.dll
+C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\compressed\mz4azubuim-yj6fvmmoe8.gz
+C:\Users\Muhammed\Source\Repos\20241129047\obj\Debug\net9.0\compressed\4ej8qvsbid-yj6fvmmoe8.gz
