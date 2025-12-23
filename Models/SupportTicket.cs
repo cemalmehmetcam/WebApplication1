@@ -21,5 +21,6 @@ namespace WebApplication1.Models
         public string Status { get; set; } = "Beklemede"; // Beklemede, Cevaplandı, Kapandı
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public string? AdminResponse { get; set; } // YENİ: Adminin cevabı (Boş olabilir)
     }
 }

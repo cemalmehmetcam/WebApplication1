@@ -110,6 +110,10 @@
                     <i class="fas fa-shopping-bag me-2"></i> Sipariş Yönetimi
                 </a>
 
+                <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Support" ? "active" : "")" href="/Support/AdminList">
+                    <i class="fas fa-headset me-2"></i> Destek Talepleri
+                </a>
+
                 <a class="list-group-item list-group-item-action mt-3" href="/" target="_blank">
                     <i class="fas fa-globe me-2"></i> Siteye Git
                 </a>

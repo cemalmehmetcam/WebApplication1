@@ -18,6 +18,7 @@ namespace WebApplication1.Controllers
             _userManager = userManager;
         }
 
+        // KULLANICI: Kendi taleplerini görsün
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -28,6 +29,7 @@ namespace WebApplication1.Controllers
             return View(tickets);
         }
 
+        // KULLANICI: Yeni talep oluştursun
         [HttpGet]
         public IActionResult Create()
         {
@@ -48,22 +50,28 @@ namespace WebApplication1.Controllers
             return RedirectToAction("Index");
         }
 
-        // ADMIN İÇİN: Talepleri Görüntüleme
+        // --- ADMIN İŞLEMLERİ ---
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AdminList()
         {
-            var tickets = await _context.SupportTickets.Include(t => t.User).OrderByDescending(t => t.CreatedDate).ToListAsync();
+            // Tüm talepleri kullanıcı bilgisiyle getir
+            var tickets = await _context.SupportTickets
+                .Include(t => t.User)
+                .OrderByDescending(t => t.CreatedDate)
+                .ToListAsync();
             return View(tickets);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CloseTicket(int id)
+        public async Task<IActionResult> Reply(int id, string adminResponse)
         {
             var ticket = await _context.SupportTickets.FindAsync(id);
             if (ticket != null)
             {
-                ticket.Status = "Çözüldü";
+                ticket.AdminResponse = adminResponse;
+                ticket.Status = "Cevaplandı"; // Durumu güncelle
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction("AdminList");

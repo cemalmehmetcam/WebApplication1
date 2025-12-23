@@ -6,57 +6,73 @@
 }
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4">Destek Talepleri</h1>
+    <h1 class="mt-4">Destek Merkezi</h1>
 
     <div class="card mb-4 mt-3">
-        <div class="card-header">
-            <i class="fas fa-envelope me-1"></i> Gelen Mesajlar
+        <div class="card-header bg-primary text-white">
+            <i class="fas fa-inbox me-1"></i> Gelen Talepler
         </div>
         <div class="card-body">
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Kullanıcı</th>
-                        <th>Konu</th>
-                        <th>Mesaj</th>
-                        <th>Durum</th>
-                        <th>Tarih</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.User.UserName <br> <small class="text-muted">@item.User.Email</small></td>
-                            <td>@item.Subject</td>
-                            <td>@item.Message</td>
-                            <td>
-                                @if (item.Status == "Beklemede")
+            @if (Model.Count == 0)
+            {
+                <div class="alert alert-info">Bekleyen talep yok.</div>
+            }
+
+            <div class="accordion" id="supportAccordion">
+                @foreach (var item in Model)
+                {
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading-@item.Id">
+                            <button class="accordion-button @(item.Status == "Cevaplandı" ? "collapsed bg-light" : "")" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@item.Id">
+                                <div class="d-flex w-100 justify-content-between me-3">
+                                    <span>
+                                        <strong>@item.User.UserName</strong>: @item.Subject
+                                    </span>
+                                    <span>
+                                        @if (item.Status == "Beklemede")
+                                        {
+                                            <span class="badge bg-warning text-dark">Bekliyor</span>
+                                        }
+                                        else
+                                        {
+
+                                            <span class="badge bg-success">Cevaplandı</span>
+                                        }
+                                        <small class="text-muted ms-2">@item.CreatedDate.ToString("dd.MM HH:mm")</small>
+                                    </span>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse-@item.Id" class="accordion-collapse collapse @(item.Status == "Beklemede" ? "show" : "")" data-bs-parent="#supportAccordion">
+                            <div class="accordion-body">
+                                <div class="alert alert-secondary">
+                                    <strong>Kullanıcı Mesajı:</strong> <br>
+                                    @item.Message
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(item.AdminResponse))
                                 {
-                                    <span class="badge bg-warning text-dark">Beklemede</span>
+                                    <div class="alert alert-success">
+                                        <strong>Sizin Cevabınız:</strong> <br>
+                                        @item.AdminResponse
+                                    </div>
                                 }
                                 else
                                 {
-                                    <span class="badge bg-success">Çözüldü</span>
-                                }
-                            </td>
-                            <td>@item.CreatedDate.ToString("dd.MM.yyyy HH:mm")</td>
-                            <td>
-                                @if (item.Status == "Beklemede")
-                                {
-                                    <form asp-action="CloseTicket" method="post">
+                                    <form asp-action="Reply" method="post">
                                         <input type="hidden" name="id" value="@item.Id" />
-                                        <button type="submit" class="btn btn-sm btn-outline-success">
-                                            <i class="fas fa-check"></i> Çözüldü İşaretle
-                                        </button>
+                                        <div class="mb-2">
+                                            <label>Cevap Yaz:</label>
+                                            <textarea name="adminResponse" class="form-control" rows="3" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-sm"><i class="fas fa-paper-plane"></i> Gönder</button>
                                     </form>
                                 }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
         </div>
     </div>
 </div>
