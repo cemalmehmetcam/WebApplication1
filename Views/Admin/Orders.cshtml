@@ -1,0 +1,96 @@
+﻿@model List<WebApplication1.Models.Order>
+
+@{
+    ViewData["Title"] = "Sipariş Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Sipariş Yönetimi</h1>
+
+    <div class="card mb-4 mt-3">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Gelen Siparişler
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Sipariş No</th>
+                        <th>Müşteri ID</th>
+                        <th>Tarih</th>
+                        <th>Tutar</th>
+                        <th>İçerik</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>#@order.Id</td>
+                            <td><small>@order.UserId</small></td>
+                            <td>@order.OrderDate.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td>@order.TotalAmount.ToString("C")</td>
+                            <td>
+                                <ul class="list-unstyled mb-0 small">
+                                    @foreach (var item in order.OrderItems)
+                                    {
+                                        <li>@item.Product.Name (x @item.Quantity)</li>
+                                    }
+                                </ul>
+                            </td>
+                            <td>
+                                <select class="form-select form-select-sm status-select"
+                                        data-order-id="@order.Id"
+                                        style="width: 150px; cursor:pointer;">
+
+                                    <!option value="Hazırlanıyor" @(order.OrderStatus == "Hazırlanıyor" ? "selected" : "")>Hazırlanıyor</!option>
+                                    <!option value="Kargolandı" @(order.OrderStatus == "Kargolandı" ? "selected" : "")>Kargolandı</!option>
+                                    <!option value="Teslim Edildi" @(order.OrderStatus == "Teslim Edildi" ? "selected" : "")>Teslim Edildi</!option>
+                                    <!option value="İptal Edildi" @(order.OrderStatus == "İptal Edildi" ? "selected" : "")>İptal Edildi</!option>
+                                </select>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $('.status-select').change(function () {
+                var orderId = $(this).data('order-id');
+                var newStatus = $(this).val();
+
+                $.ajax({
+                    url: '/Admin/UpdateOrderStatus',
+                    type: 'POST',
+                    data: { id: orderId, orderStatus: newStatus },
+                    success: function (response) {
+                        if (response.success) {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                icon: 'success'
+                            });
+                            Toast.fire({ title: response.message });
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert("Bir hata oluştu.");
+                    }
+                });
+            });
+        });
+    </script>
+}

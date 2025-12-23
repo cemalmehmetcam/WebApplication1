@@ -70,22 +70,21 @@
         body.sb-sidenav-toggled #sidebar-wrapper {
             margin-left: 0;
         }
+
+        /* DÜZELTME BURADA YAPILDI: @@media olarak değiştirildi */
         @@media (min-width: 768px) {
-            #sidebar-wrapper
+            #sidebar-wrapper {
+                margin-left: 0;
+            }
 
-        {
-            margin-left: 0;
-        }
+            #page-content-wrapper {
+                min-width: 0;
+                width: 100%;
+            }
 
-        #page-content-wrapper {
-            min-width: 0;
-            width: 100%;
-        }
-
-        body.sb-sidenav-toggled #sidebar-wrapper {
-            margin-left: -15rem;
-        }
-
+            body.sb-sidenav-toggled #sidebar-wrapper {
+                margin-left: -15rem;
+            }
         }
     </style>
 </head>
@@ -94,23 +93,33 @@
         <div id="sidebar-wrapper">
             <div class="sidebar-heading"><i class="fas fa-laugh-wink me-2"></i>Admin Panel</div>
             <div class="list-group list-group-flush mt-3">
-                <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"].ToString() == "Admin" ? "active" : "")" href="/Admin">
+
+                <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" && ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")" href="/Admin">
                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                 </a>
-                <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"].ToString() == "Category" ? "active" : "")" href="/Category">
+
+                <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Category" ? "active" : "")" href="/Category">
                     <i class="fas fa-list me-2"></i> Kategoriler
                 </a>
-                <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"].ToString() == "Product" ? "active" : "")" href="/Product">
+
+                <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Product" ? "active" : "")" href="/Product">
                     <i class="fas fa-box me-2"></i> Ürünler
                 </a>
-                <a class="list-group-item list-group-item-action" href="/" target="_blank">
+
+                <a class="list-group-item list-group-item-action @(ViewContext.RouteData.Values["Action"]?.ToString() == "Orders" ? "active" : "")" href="/Admin/Orders">
+                    <i class="fas fa-shopping-bag me-2"></i> Sipariş Yönetimi
+                </a>
+
+                <a class="list-group-item list-group-item-action mt-3" href="/" target="_blank">
                     <i class="fas fa-globe me-2"></i> Siteye Git
                 </a>
-                <a class="list-group-item list-group-item-action text-danger mt-5" href="/Account/Logout">
+
+                <a class="list-group-item list-group-item-action text-danger mt-3" href="/Account/Logout">
                     <i class="fas fa-sign-out-alt me-2"></i> Çıkış Yap
                 </a>
             </div>
         </div>
+
         <div id="page-content-wrapper">
             <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm px-4">
                 <button class="btn btn-primary" id="menu-toggle"><i class="fas fa-bars"></i></button>
@@ -118,12 +127,22 @@
                     <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="me-2 text-gray-600 small">Yönetici</span>
+                                <span class="me-2 text-gray-600 small">
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        @User.Identity.Name
+                                    }
+                                    else
+                                    {
+
+                                        <text>Yönetici</text>
+                                    }
+                                </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="/Account/Logout">Çıkış Yap</a>
                                 <a class="dropdown-item" href="/Admin/Profile">Profilim</a>
                                 <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-danger" href="/Account/Logout">Çıkış Yap</a>
                             </div>
                         </li>
                     </ul>
@@ -151,5 +170,37 @@
         });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        var connection = new signalR.HubConnectionBuilder().withUrl("/orderhub").build();
+
+        connection.on("ReceiveOrderNotification", function (message) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: 'success',
+                title: message
+            });
+        });
+
+        connection.start().then(function () {
+            console.log("SignalR Bağlandı!");
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+    </script>
 </body>
 </html>

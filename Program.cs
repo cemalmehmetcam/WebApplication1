@@ -25,6 +25,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 
 // 3. Repository Dependency Injection Tanýmlarý
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddSignalR();
 
 builder.Services.AddControllersWithViews();
 
@@ -46,6 +47,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.MapHub<WebApplication1.Hubs.OrderHub>("/orderhub");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
