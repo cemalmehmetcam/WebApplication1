@@ -1,0 +1,60 @@
+﻿@model Microsoft.AspNetCore.Identity.IdentityUser
+
+@{
+    ViewData["Title"] = "Profilim";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <img src="https://ui-avatars.com/api/?name=@Model.UserName&background=0D8ABC&color=fff&size=128"
+                             class="rounded-circle img-fluid" style="width: 128px;" />
+                    </div>
+                    <h5 class="card-title">@Model.Email</h5>
+                    <p class="text-muted">Üye</p>
+                    <hr />
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Order" asp-action="Index" class="btn btn-outline-primary">
+                            <i class="fas fa-box-open"></i> Siparişlerim
+                        </a>
+                        <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-success">
+                            <i class="fas fa-shopping-cart"></i> Sepetim
+                        </a>
+                        <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger">
+                            <i class="fas fa-sign-out-alt"></i> Çıkış Yap
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card mb-3">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0"><i class="fas fa-user-cog"></i> Hesap Bilgileri</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3 fw-bold">E-Posta:</div>
+                        <div class="col-sm-9 text-secondary">@Model.Email</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 fw-bold">Kullanıcı Adı:</div>
+                        <div class="col-sm-9 text-secondary">@Model.UserName</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-sm-3 fw-bold">Üyelik ID:</div>
+                        <div class="col-sm-9 text-secondary"><small>@Model.Id</small></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle"></i> Sipariş geçmişinizi ve detaylarını "Siparişlerim" menüsünden takip edebilirsiniz.
+            </div>
+        </div>
+    </div>
+</div>
