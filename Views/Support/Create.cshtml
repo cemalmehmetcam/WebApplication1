@@ -1,0 +1,32 @@
+﻿@model WebApplication1.Models.SupportTicket
+@{
+    ViewData["Title"] = "Yeni Destek Talebi";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">Yeni Destek Talebi</div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Konu</label>
+                            <select asp-for="Subject" class="form-select">
+                                <option>İade/Değişim</option>
+                                <option>Sipariş Durumu</option>
+                                <option>Adres Değişikliği</option>
+                                <option>Diğer</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mesajınız</label>
+                            <textarea asp-for="Message" class="form-control" rows="4" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Gönder</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

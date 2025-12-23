@@ -13,7 +13,10 @@ namespace WebApplication1.Models
         public DbSet<Product> Products { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }    
+
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<SupportTicket> SupportTickets { get; set; }
 
         // --- BU KISIM EKLENDÝ ---
         protected override void OnModelCreating(ModelBuilder builder)

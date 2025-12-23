@@ -1,51 +1,55 @@
-﻿@model IEnumerable<WebApplication1.Models.Product>
-
-@{
-    ViewData["Title"] = "Ana Sayfa";
+﻿@{
+    ViewData["Title"] = "Anasayfa";
 }
 
-<div class="text-center mb-5">
-    <h1 class="display-4">Ürün Satış Portalı</h1>
-    <p class="lead">Hoşgeldiniz! En yeni ürünlerimizi aşağıda bulabilirsiniz.</p>
-</div>
-
-<div class="container">
-    <div class="row">
-        @if (Model != null && Model.Any())
-        {
-            @foreach (var product in Model)
-            {
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        @if (!string.IsNullOrEmpty(product.ImageUrl))
-                        {
-                            <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;">
-                        }
-                        else
-                        {
-                            <div class="card-img-top bg-secondary text-white d-flex justify-content-center align-items-center" style="height: 200px;">
-                                <span>Resim Yok</span>
-                            </div>
-                        }
-                        <div class="card-body">
-                            <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text text-truncate">@product.Description</p>
-                            <h6 class="card-subtitle mb-2 text-muted">@product.Price.ToString("C")</h6>
-                        </div>
-                        <div class="card-footer bg-white border-top-0">
-                            <a href="#" class="btn btn-primary w-100">İncele</a>
-                        </div>
-                    </div>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="col-12 text-center">
-                <div class="alert alert-warning" role="alert">
-                    Henüz eklenmiş bir ürün bulunmamaktadır. Yönetici panelinden ürün ekleyebilirsiniz.
-                </div>
+<div class="container py-4">
+    <div class="hero-section text-white p-5 rounded-4 mb-5 position-relative overflow-hidden">
+        <div class="position-relative z-1">
+            <h1 class="hero-title display-3 fw-bold mb-3">Teknolojiye Dokun</h1>
+            <p class="hero-text lead mb-4">En yeni ürünler, en uygun fiyatlar ve güvenli alışveriş deneyimi burada.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a asp-controller="Product" asp-action="Index" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary shadow">
+                    <i class="fas fa-shopping-bag me-2"></i> Alışverişe Başla
+                </a>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Account" asp-action="Register" class="btn btn-outline-light btn-lg rounded-pill px-5 fw-bold">
+                        Kayıt Ol
+                    </a>
+                }
             </div>
-        }
+        </div>
+        <div style="position: absolute; top: -50px; right: -50px; width: 300px; height: 300px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -50px; left: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+    </div>
+
+    <div class="row text-center mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="p-4 bg-white rounded-4 shadow-sm h-100 hover-effect">
+                <div class="icon-box mb-3 text-primary">
+                    <i class="fas fa-laptop fa-3x"></i>
+                </div>
+                <h4>Elektronik</h4>
+                <p class="text-muted">Son teknoloji bilgisayarlar ve donanımlar.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="p-4 bg-white rounded-4 shadow-sm h-100 hover-effect">
+                <div class="icon-box mb-3 text-success">
+                    <i class="fas fa-mobile-alt fa-3x"></i>
+                </div>
+                <h4>Mobil</h4>
+                <p class="text-muted">Akıllı telefonlar ve aksesuarlar.</p>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="p-4 bg-white rounded-4 shadow-sm h-100 hover-effect">
+                <div class="icon-box mb-3 text-warning">
+                    <i class="fas fa-headset fa-3x"></i>
+                </div>
+                <h4>Aksesuar</h4>
+                <p class="text-muted">Kulaklıklar, kılıflar ve daha fazlası.</p>
+            </div>
+        </div>
     </div>
 </div>

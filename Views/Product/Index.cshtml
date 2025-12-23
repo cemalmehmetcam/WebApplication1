@@ -2,107 +2,126 @@
 
 @{
     ViewData["Title"] = "Ürünler";
-    // Yönetici ise Admin panelini, değilse Kullanıcı arayüzünü kullan
     Layout = User.IsInRole("Admin") ? "~/Views/Shared/_AdminLayout.cshtml" : "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid px-4">
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
-        <h1 class="h3 mb-0 text-gray-800">@(User.IsInRole("Admin") ? "Ürün Yönetimi" : "Ürünlerimiz")</h1>
-
-        @if (User.IsInRole("Admin"))
-        {
-            <a asp-action="Create" class="btn btn-success">
-                <i class="fas fa-plus"></i> Yeni Ürün Ekle
-            </a>
-        }
-    </div>
-
-    <div class="card mb-3 p-3">
-        <form asp-controller="Product" asp-action="Index" method="get">
-            <div class="row align-items-center">
-                <div class="col-md-2 fw-bold text-end">
-                    Kategoriye Göre Filtrele:
+@if (User.IsInRole("Admin"))
+{
+    // --- ADMIN İÇİN TABLO GÖRÜNÜMÜ ---
+    <div class="container-fluid px-4">
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+            <h1 class="h3 mb-0 text-gray-800">Ürün Yönetimi</h1>
+            <a asp-action="Create" class="btn btn-success"><i class="fas fa-plus"></i> Yeni Ürün Ekle</a>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-dark">
+                            <tr><th>Resim</th><th>Ürün Adı</th><th>Fiyat</th><th>Kategori</th><th>İşlemler</th></tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td style="width: 80px;">
+                                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                        {
+                                            <img src="@item.ImageUrl" width="50" style="border-radius:5px;" />
+                                        }
+                                    </td>
+                                    <td>@item.Name</td>
+                                    <td>@item.Price.ToString("C")</td>
+                                    <td>@item.Category.Name</td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                        <a onclick="Delete('/Product/DeleteAjax/@item.Id')" class="btn btn-danger btn-sm text-white" style="cursor:pointer"><i class="fas fa-trash"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-md-4">
-                    <select name="categoryId" class="form-select" asp-items="ViewBag.CategoryList" onchange="this.form.submit()">
-                        <option value="0">-- Tüm Kategoriler --</option>
-                    </select>
-                </div>
-                @if (!User.IsInRole("Admin"))
-                {
-                    <div class="col-md-6 text-end">
-                        <a asp-controller="Cart" asp-action="Index" class="btn btn-warning">
-                            <i class="fas fa-shopping-cart"></i> Sepetim
-                        </a>
-                    </div>
-                }
-            </div>
-        </form>
-    </div>
-
-    <div class="card shadow mb-4">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Resim</th>
-                            <th>Ürün Adı</th>
-                            <th>Fiyat</th>
-                            <th>Kategori</th>
-                            <th style="width: 200px;">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td style="width: 100px;">
-                                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                                    {
-                                        <img src="@item.ImageUrl" width="80" height="80" style="object-fit:cover; border-radius:5px;" />
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">Resim Yok</span>
-                                    }
-                                </td>
-                                <td class="align-middle">@item.Name</td>
-                                <td class="align-middle">@item.Price.ToString("C")</td>
-                                <td class="align-middle">@item.Category.Name</td>
-                                <td class="align-middle text-center">
-
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-
-                                        <a onclick="Delete('/Product/DeleteAjax/@item.Id')" class="btn btn-danger btn-sm text-white" style="cursor:pointer">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@item.Id" class="btn btn-primary btn-sm w-100">
-                                            <i class="fas fa-cart-plus"></i> Sepete Ekle
-                                        </a>
-                                    }
-
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-                @if (!Model.Any())
-                {
-                    <div class="alert alert-info text-center">Henüz hiç ürün eklenmemiş.</div>
-                }
             </div>
         </div>
     </div>
-</div>
+}
+else
+{
+    // --- MÜŞTERİ İÇİN KART (GRID) GÖRÜNÜMÜ ---
+    <div class="container mt-4">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-6">
+                <h2 class="fw-bold text-dark"><i class="fas fa-th-large me-2 text-primary"></i>Tüm Ürünler</h2>
+                <p class="text-muted">En yeni teknolojik ürünleri keşfedin ve yorumlayın.</p>
+            </div>
+
+            <div class="col-md-6">
+                <form asp-controller="Product" asp-action="Index" method="get" class="d-flex justify-content-md-end">
+                    <div class="input-group" style="max-width: 300px;">
+                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-filter text-muted"></i></span>
+                        <select name="categoryId" class="form-select border-start-0 ps-0" asp-items="ViewBag.CategoryList" onchange="this.form.submit()">
+                            <option value="0">Tüm Kategoriler</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            @if (!Model.Any())
+            {
+                <div class="col-12 text-center py-5">
+                    <div class="display-1 text-muted mb-3"><i class="fas fa-box-open"></i></div>
+                    <h3>Üzgünüz, ürün bulunamadı.</h3>
+                    <p class="text-muted">Lütfen başka bir kategori seçin.</p>
+                </div>
+            }
+
+            @foreach (var item in Model)
+            {
+                <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="product-card h-100 d-flex flex-column">
+
+                        <a asp-controller="Product" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none">
+                            <div class="product-img-wrapper position-relative">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name" />
+                                }
+                                else
+                                {
+                                    <div class="text-muted bg-light w-100 h-100 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-camera fa-2x"></i>
+                                    </div>
+                                }
+                                <span class="position-absolute top-0 start-0 m-3 badge bg-primary rounded-pill">@item.Category.Name</span>
+                            </div>
+                        </a>
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="product-title" title="@item.Name">
+                                <a asp-controller="Product" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark">
+                                    @item.Name
+                                </a>
+                            </h5>
+
+                            <div class="mt-auto">
+                                <span class="product-price">@item.Price.ToString("C")</span>
+
+                                <div class="d-grid">
+                                    <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@item.Id" class="btn btn-outline-primary btn-sm rounded-pill">
+                                        <i class="fas fa-cart-plus me-1"></i> Sepete Ekle
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -110,34 +129,18 @@
         function Delete(url) {
             Swal.fire({
                 title: 'Emin misiniz?',
-                text: "Bu ürünü silmek istediğinize emin misiniz? Resim dosyası da silinecek!",
+                text: "Bu ürünü silmek istediğinize emin misiniz?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Evet, sil!',
-                cancelButtonText: 'İptal'
+                confirmButtonText: 'Evet, sil!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
                         url: url,
                         type: 'DELETE',
                         success: function (data) {
-                            if (data.success) {
-                                Swal.fire(
-                                    'Silindi!',
-                                    data.message,
-                                    'success'
-                                ).then(() => {
-                                    location.reload();
-                                });
-                            } else {
-                                Swal.fire(
-                                    'Hata!',
-                                    data.message,
-                                    'error'
-                                );
-                            }
+                            if (data.success) { location.reload(); }
                         }
                     })
                 }

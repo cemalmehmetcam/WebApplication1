@@ -1,0 +1,115 @@
+﻿@model WebApplication1.Models.Product
+
+@{
+    ViewData["Title"] = Model.Name;
+    var reviews = ViewBag.Reviews as List<WebApplication1.Models.Review>;
+    var averageRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0;
+}
+
+<div class="container py-5">
+    <div class="card border-0 shadow-lg mb-5 overflow-hidden">
+        <div class="row g-0">
+            <div class="col-md-6 bg-light d-flex align-items-center justify-content-center p-5">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <img src="@Model.ImageUrl" class="img-fluid rounded shadow-sm" style="max-height: 400px;" />
+                }
+                else
+                {
+                    <i class="fas fa-camera fa-5x text-muted"></i>
+                }
+            </div>
+            <div class="col-md-6 p-5">
+                <div class="mb-2">
+                    <span class="badge bg-primary rounded-pill">@Model.Category.Name</span>
+                    <span class="text-warning ms-2">
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= Math.Round(averageRating))
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            else
+                            {
+
+                                <i class="far fa-star"></i>
+                            }
+                        }
+                        <small class="text-muted">(@reviews.Count değerlendirme)</small>
+                    </span>
+                </div>
+                <h1 class="fw-bold mb-3">@Model.Name</h1>
+                <h3 class="text-primary fw-bold mb-4">@Model.Price.ToString("C2")</h3>
+                <p class="text-muted mb-4">Bu ürün, en kaliteli malzemelerle üretilmiş olup satış portalımızın güvencesi altındadır.</p> <div class="d-grid gap-2">
+                    @if (!User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Cart" asp-action="AddToCart" asp-route-productId="@Model.Id" class="btn btn-primary btn-lg rounded-pill">
+                            <i class="fas fa-cart-plus me-2"></i> Sepete Ekle
+                        </a>
+                    }
+                    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill">Geri Dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h3 class="fw-bold mb-4">Müşteri Yorumları</h3>
+
+            @if (User.Identity.IsAuthenticated && !User.IsInRole("Admin"))
+            {
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Değerlendir</h5>
+                        <form asp-action="AddReview" method="post">
+                            <input type="hidden" name="productId" value="@Model.Id" />
+                            <div class="mb-3">
+                                <label class="form-label">Puanınız:</label>
+                                <div class="rating">
+                                    <select name="rating" class="form-select" style="width: 150px;">
+                                        <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+                                        <option value="4">⭐⭐⭐⭐ (4)</option>
+                                        <option value="3">⭐⭐⭐ (3)</option>
+                                        <option value="2">⭐⭐ (2)</option>
+                                        <option value="1">⭐ (1)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <textarea name="comment" class="form-control" rows="3" placeholder="Yorumunuzu yazın..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-success">Gönder</button>
+                        </form>
+                    </div>
+                </div>
+            }
+
+            @if (reviews.Any())
+            {
+                @foreach (var review in reviews)
+                {
+                    <div class="card mb-3 border-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold mb-0">@review.User.UserName</h6>
+                                <small class="text-muted">@review.CreatedDate.ToString("dd.MM.yyyy")</small>
+                            </div>
+                            <div class="text-warning mb-2">
+                                @for (int i = 0; i < review.Rating; i++)
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                            </div>
+                            <p class="mb-0 text-dark">@review.Comment</p>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-light text-center">Henüz yorum yapılmamış. İlk yorumu sen yap!</div>
+            }
+        </div>
+    </div>
+</div>

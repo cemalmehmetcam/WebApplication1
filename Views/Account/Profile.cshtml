@@ -4,56 +4,73 @@
     ViewData["Title"] = "Profilim";
 }
 
-<div class="container mt-5">
+<div class="container py-5">
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
     <div class="row">
-        <div class="col-md-4 mb-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <img src="https://ui-avatars.com/api/?name=@Model.UserName&background=0D8ABC&color=fff&size=128"
-                             class="rounded-circle img-fluid" style="width: 128px;" />
-                    </div>
-                    <h5 class="card-title">@Model.Email</h5>
-                    <p class="text-muted">Üye</p>
-                    <hr />
-                    <div class="d-grid gap-2">
-                        <a asp-controller="Order" asp-action="Index" class="btn btn-outline-primary">
-                            <i class="fas fa-box-open"></i> Siparişlerim
-                        </a>
-                        <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-success">
-                            <i class="fas fa-shopping-cart"></i> Sepetim
-                        </a>
-                        <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger">
-                            <i class="fas fa-sign-out-alt"></i> Çıkış Yap
-                        </a>
-                    </div>
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm text-center p-4">
+                <div class="mb-3 position-relative d-inline-block">
+                    <img src="https://ui-avatars.com/api/?name=@Model.UserName&background=4e73df&color=fff&size=128&bold=true"
+                         class="rounded-circle shadow-sm p-1 bg-white" width="128" height="128" />
+                </div>
+                <h5 class="fw-bold mb-1">@Model.UserName</h5>
+                <p class="text-muted small mb-4">@Model.Email</p>
+
+                <div class="d-grid gap-2">
+                    <a asp-controller="Order" asp-action="Index" class="btn btn-outline-primary rounded-pill">
+                        <i class="fas fa-box me-2"></i> Siparişlerim
+                    </a>
+                    <a asp-action="ChangePassword" class="btn btn-outline-warning text-dark rounded-pill">
+                        <i class="fas fa-key me-2"></i> Şifre Değiştir
+                    </a>
+                    <a asp-controller="Account" asp-action="Logout" class="btn btn-outline-danger rounded-pill">
+                        <i class="fas fa-sign-out-alt me-2"></i> Çıkış Yap
+                    </a>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-8">
-            <div class="card mb-3">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0"><i class="fas fa-user-cog"></i> Hesap Bilgileri</h5>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 border-bottom">
+                    <h6 class="m-0 fw-bold text-primary"><i class="fas fa-user-circle me-2"></i>Hesap Bilgileri</h6>
                 </div>
                 <div class="card-body">
                     <div class="row mb-3">
-                        <div class="col-sm-3 fw-bold">E-Posta:</div>
-                        <div class="col-sm-9 text-secondary">@Model.Email</div>
+                        <label class="col-sm-3 col-form-label fw-bold text-muted">Kullanıcı Adı</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control-plaintext text-dark fw-bold" readonly value="@Model.UserName">
+                        </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-3 fw-bold">Kullanıcı Adı:</div>
-                        <div class="col-sm-9 text-secondary">@Model.UserName</div>
+                        <label class="col-sm-3 col-form-label fw-bold text-muted">E-Posta</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control-plaintext text-dark fw-bold" readonly value="@Model.Email">
+                        </div>
                     </div>
-                    <div class="row mb-3">
-                        <div class="col-sm-3 fw-bold">Üyelik ID:</div>
-                        <div class="col-sm-9 text-secondary"><small>@Model.Id</small></div>
+                    <div class="row">
+                        <label class="col-sm-3 col-form-label fw-bold text-muted">Üyelik ID</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control-plaintext text-muted small" readonly value="@Model.Id">
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="alert alert-info">
-                <i class="fas fa-info-circle"></i> Sipariş geçmişinizi ve detaylarını "Siparişlerim" menüsünden takip edebilirsiniz.
+            <div class="alert alert-light border shadow-sm d-flex align-items-center" role="alert">
+                <i class="fas fa-shield-alt fa-2x text-success me-3"></i>
+                <div>
+                    <strong>Hesabınız Güvende!</strong>
+                    <div class="text-muted small">Şifrenizi düzenli olarak değiştirmeniz güvenliğiniz için önerilir.</div>
+                </div>
             </div>
         </div>
     </div>
